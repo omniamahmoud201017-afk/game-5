@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سالم والطعام الصحي</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1d2b53;--bar:#ffcf3f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#1d2b53}}
+:root[data-theme="dark"]{--navy:#1d2b53}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#1d2b53;font-family:"Baloo Bhaijaan 2","Segoe UI",Tahoma,Arial,sans-serif;color:var(--navy);overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+#screen{position:relative;container-type:inline-size;width:min(calc(100vw - 20px),calc((100vh - 110px)*1.6),960px);aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:linear-gradient(180deg,var(--bg1,#8fd3ff),var(--bg2,#d9f2ff));transition:background .5s}
+.ground{position:absolute;left:0;right:0;bottom:0;height:30%;background:var(--ground,#7ed957)}
+#stage{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr auto;padding:3cqw 4cqw 3cqw}
+.title{font-weight:800;font-size:5.4cqw;text-align:center;line-height:1.3;animation:fade .5s both}
+.mid{min-height:0;display:flex;align-items:flex-end;justify-content:center;gap:6cqw;padding:1cqw 0 0}
+.kid{height:100%;width:auto;display:block}
+.kid.bob{animation:bob 2.6s ease-in-out infinite}
+.items{display:flex;gap:2cqw;align-items:center;align-self:center;padding-bottom:8cqw}
+.item{font-size:15cqw;line-height:1;animation:pop .6s both}
+.caption{background:#fff;border-radius:2.4cqw;padding:1.6cqw 3cqw;font-weight:500;font-size:3.1cqw;text-align:center;line-height:1.5;box-shadow:0 .5cqw 0 rgba(0,0,0,.12);animation:fade .6s .2s both;position:relative;z-index:2}
+.wave{animation:wave .7s ease-in-out infinite alternate;transform-origin:130px 122px}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2cqw)}}
+@keyframes wave{from{transform:rotate(-8deg)}to{transform:rotate(10deg)}}
+#bar{width:min(calc(100vw - 20px),calc((100vh - 110px)*1.6),960px);height:10px;border-radius:6px;background:rgba(255,255,255,.2);margin-top:12px;overflow:hidden}
+#fill{height:100%;width:0;background:var(--bar)}
+#ctrl{display:flex;gap:10px;margin-top:10px}
+button{font:inherit;font-size:20px;border:0;border-radius:14px;padding:4px 18px;background:var(--bar);color:var(--navy);cursor:pointer;font-weight:800}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#start{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;background:linear-gradient(180deg,#8fd3ff,#d9f2ff);text-align:center}
+#start h1{font-size:7cqw;font-weight:800}
+#start .big{font-size:14cqw;line-height:1}
+#start button{font-size:4cqw;padding:1cqw 5cqw}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="screen">
+    <div class="ground"></div>
+    <div id="stage"></div>
+    <div id="start"><div class="big">🥦</div><h1>سالم والطعام الصحي</h1><button id="go">▶ ابدأ الفيديو</button></div>
+  </div>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="ctrl">
+    <button id="next" title="التالي">⏭</button>
+    <button id="play" title="إيقاف / تشغيل">⏸</button>
+    <button id="prev" title="السابق">⏮</button>
+    <button id="snd" title="الصوت">🔊</button>
+  </div>
+</div>
+<script>
+function kid(mood,pose){
+  const tired=mood==="tired", skin=tired?"#f0d2bc":"#ffd9b3", shirt=tired?"#9fb4c7":"#3aa6ff";
+  const arms={
+    down:`<path d="M70 122 L54 188"/><path d="M130 122 L146 188"/><circle cx="54" cy="190" r="9" fill="${skin}"/><circle cx="146" cy="190" r="9" fill="${skin}"/>`,
+    wave:`<path d="M70 122 L54 188"/><circle cx="54" cy="190" r="9" fill="${skin}"/><g class="wave"><path d="M130 122 L160 92 L166 60"/><circle cx="166" cy="56" r="9" fill="${skin}"/></g>`,
+    strong:`<path d="M70 122 L36 132 L38 90"/><path d="M130 122 L164 132 L162 90"/><circle cx="38" cy="85" r="10" fill="${skin}"/><circle cx="162" cy="85" r="10" fill="${skin}"/>`
+  };
+  const eyes=tired?`<path d="M76 62 Q84 69 92 62M108 62 Q116 69 124 62" stroke="#1d2b53" stroke-width="4" fill="none" stroke-linecap="round"/>`
+    :`<circle cx="84" cy="62" r="5.5" fill="#1d2b53"/><circle cx="116" cy="62" r="5.5" fill="#1d2b53"/><circle cx="86" cy="60" r="1.8" fill="#fff"/><circle cx="118" cy="60" r="1.8" fill="#fff"/>`;
+  const mouth=tired?`<path d="M90 87 Q100 80 110 87" stroke="#1d2b53" stroke-width="4" fill="none" stroke-linecap="round"/>`
+    :mood==="strong"?`<path d="M82 77 Q100 104 118 77Z" fill="#c0392b" stroke="#1d2b53" stroke-width="3" stroke-linejoin="round"/>`
+    :`<path d="M84 78 Q100 95 116 78" stroke="#1d2b53" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  const cheeks=tired?"":`<circle cx="72" cy="76" r="6" fill="#ff9aa2" opacity=".6"/><circle cx="128" cy="76" r="6" fill="#ff9aa2" opacity=".6"/>`;
+  return `<svg class="kid ${tired?"":"bob"}" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="سالم">
+   <g ${tired?'transform="rotate(-3 100 300)"':''}>
+    <rect x="78" y="222" width="16" height="64" rx="7" fill="${skin}"/><rect x="106" y="222" width="16" height="64" rx="7" fill="${skin}"/>
+    <ellipse cx="82" cy="290" rx="18" ry="9" fill="#e63946"/><ellipse cx="118" cy="290" rx="18" ry="9" fill="#e63946"/>
+    <rect x="70" y="190" width="60" height="40" rx="8" fill="#1d2b53"/>
+    <g stroke="${skin}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none">${arms[pose]}</g>
+    <rect x="66" y="104" width="68" height="94" rx="18" fill="${shirt}"/>
+    <rect x="90" y="96" width="20" height="14" fill="${skin}"/>
+    <circle cx="100" cy="60" r="42" fill="${skin}"/>
+    <path d="M58 56 Q58 14 100 14 Q142 14 142 56 Q120 34 100 38 Q80 34 58 56Z" fill="#3b2a20"/>
+    ${cheeks}${eyes}${mouth}
+   </g></svg>`;
+}
+const scenes=[
+ {bg:["#8fd3ff","#d9f2ff"],gr:"#7ed957",title:"مرحباً يا أصدقائي! أنا سالم",mood:"happy",pose:"wave",items:[],text:"اليوم سنتعلم لماذا الطعام الصحي مهم لنا."},
+ {bg:["#cfd6e6","#eef1f8"],gr:"#a9b3c7",title:"سالم تعبان",mood:"tired",pose:"down",items:["🍬","🍟"],text:"سالم يأكل الحلوى والمقرمشات فقط، فيشعر بالتعب والكسل."},
+ {bg:["#ffe29a","#fff5d6"],gr:"#7ed957",title:"الفواكه والخضروات",mood:"happy",pose:"down",items:["🍎","🥕","🥦"],text:"فيها فيتامينات تحميك من المرض وتمنحك النشاط."},
+ {bg:["#b9e8ff","#eaf8ff"],gr:"#9bdc7a",title:"الحليب والبيض",mood:"happy",pose:"down",items:["🥛","🥚"],text:"تبني عظامك وعضلاتك لتنمو وتصبح قوياً."},
+ {bg:["#7fd1f5","#c8efff"],gr:"#4fb3e6",title:"اشرب الماء كل يوم",mood:"happy",pose:"down",items:["💧"],text:"جسمك يحتاج الماء ليعمل جيداً."},
+ {bg:["#ffd0d6","#fff0f2"],gr:"#7ed957",title:"اغسل يديك قبل الأكل",mood:"happy",pose:"down",items:["🧼"],text:"بالماء والصابون. أما الحلوى فنأكلها قليلاً فقط."},
+ {bg:["#ffdd6e","#fff6cf"],gr:"#7ed957",title:"أنا الآن قوي ونشيط!",mood:"strong",pose:"strong",items:[],text:"كُل صحياً، واشرب الماء، والعب كثيراً. صحتك أغلى ما تملك!"}
+];
+const DUR=8000;
+let i=0,playing=true,sound=true,t0=0,elapsed=0,started=false;
+const $=id=>document.getElementById(id), scr=$("screen");
+function speak(txt){
+  try{speechSynthesis.cancel();if(!sound||!playing)return;
+    const u=new SpeechSynthesisUtterance(txt);u.lang="ar-SA";u.rate=.9;u.pitch=1.2;
+    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith("ar"));if(v)u.voice=v;
+    speechSynthesis.speak(u);}catch(e){}
+}
+function render(n){
+  i=(n+scenes.length)%scenes.length;const s=scenes[i];
+  scr.style.setProperty("--bg1",s.bg[0]);scr.style.setProperty("--bg2",s.bg[1]);scr.style.setProperty("--ground",s.gr);
+  $("stage").innerHTML=`<div class="title">${s.title}</div>
+   <div class="mid">${kid(s.mood,s.pose)}<div class="items">${s.items.map((e,k)=>`<span class="item" style="animation-delay:${.3+k*.25}s">${e}</span>`).join("")}</div></div>
+   <div class="caption">${s.text}</div>`;
+  elapsed=0;t0=performance.now();
+  speak(s.title+". "+s.text);
+}
+function tick(now){
+  if(playing)elapsed+=now-t0;
+  t0=now;
+  $("fill").style.width=((i+Math.min(elapsed/DUR,1))/scenes.length*100)+"%";
+  if(elapsed>=DUR){ if(i<scenes.length-1){render(i+1)} else {playing=false;$("play").textContent="🔁";elapsed=DUR;} }
+  requestAnimationFrame(tick);
+}
+$("go").onclick=()=>{$("start").remove();started=true;render(0);t0=performance.now();requestAnimationFrame(tick);};
+$("next").onclick=()=>started&&render(i+1);
+$("prev").onclick=()=>started&&render(i-1);
+$("play").onclick=()=>{
+  if(!started)return;
+  if(!playing&&elapsed>=DUR){playing=true;$("play").textContent="⏸";render(0);return;}
+  playing=!playing;$("play").textContent=playing?"⏸":"▶";
+  if(playing)speak(scenes[i].text);else{try{speechSynthesis.cancel()}catch(e){}}
+};
+$("snd").onclick=()=>{sound=!sound;$("snd").textContent=sound?"🔊":"🔇";if(!sound){try{speechSynthesis.cancel()}catch(e){}}else if(playing)speak(scenes[i].text)};
+</script>
+</body>
+</html>
